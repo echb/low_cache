@@ -15,30 +15,20 @@
 //  * @prop {number} [prop5=42] - an optional number property of SpecialType with default
 //  */
 
-/**
- * Returns a UUIDv4 as string
- *
- * @returns {string}
- * {@link https://gist.github.com/hyamamoto/fd435505d29ebfa3d9716fd2be8d42f0?permalink_comment_id=4466912#gistcomment-4466912 GitHub}.
- */
-const generateUuid = () => {
-	return String("xxxxxxx").replace(/[x]/g, (character) => {
-		const random = (Math.random() * 16) | 0;
-		const value = character === "x" ? random : (random & 0x3) | 0x8;
-
-		return value.toString(16);
-	});
-};
-
-// console.log(generateUuid());
+class Hash {
+	/**
+	 * Returns a UUIDv4 as string
+	 * @returns {number}
+	 */
+	static generateHash = () => Math.round(Math.random() * 100000000);
+}
 
 /**
  * @template T
  */
 class LCaheValues {
-	/**@type {string} */
+	hash;
 	key;
-	// /**@type {T} */
 	value;
 
 	/**
@@ -46,6 +36,7 @@ class LCaheValues {
 	 * @param {{ key: string, value: T}} object with more
 	 */
 	constructor(object) {
+		this.hash = Hash.generateHash();
 		this.key = object.key;
 		this.value = object.value;
 	}
@@ -75,20 +66,42 @@ class LCache {
 	}
 
 	/**
-	 * @return {Map.<string, LCaheValues>}
+	 * @return {Object.<string, LCaheValues>}
 	 */
 	get cache() {
-		return this.#cache;
+		return Object.fromEntries(this.#cache);
+	}
+
+	/**
+	 * Override existing values if key already exist else add new value
+	 * @template T
+	 * @param {{ key: string, value?: T|null}} item - fallback value is null
+	 * @returns {LCaheValues}
+	 */
+	exist({ key, value = null }) {
+		if (this.#cache.has(key) === true) {
+			this.add({ key, value });
+			return this.get(key);
+		}
+
+		try {
+			this.add({ key, value });
+		} catch (error) {
+			throw new Error(`value does not exist, error: ${error}`);
+		}
+
+		return this.get(key);
 	}
 
 	/**
 	 * @param {string} key with more
 	 * @returns {LCaheValues}
+	 * Return the value
 	 */
 	get(key) {
 		const value = this.#cache.get(key);
 		if (value === undefined) {
-			throw new Error("key does not exist");
+			throw new Error("key does not exist, must provide a valid key");
 		}
 
 		return value;
@@ -100,6 +113,14 @@ class LCache {
 	 * @returns {LCaheValues}
 	 */
 	add(object) {
+		if (object.key === undefined) {
+			throw new Error("Must provide a valid key");
+		}
+
+		if (object.value === undefined) {
+			throw new Error("Must provide a valid value");
+		}
+
 		this.#cache.set(
 			object.key,
 			new LCaheValues({
