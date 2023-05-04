@@ -1,9 +1,9 @@
 # Installing
 
 Using npm:
-`npm install axios`
+`npm install low_js_cache`
 Using yarn:
-`yarn add axios`
+`yarn add low_js_cache`
 
 Once the package is installed, you can import the library using import or require approach:
 
