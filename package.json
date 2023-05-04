@@ -3,10 +3,26 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "scripts": {
+    "dev": "node --watch ."
+  },
+  "keywords": [
+    "cache"
+  ],
+  "author": "Emmanuel",
+  "contributors": [
+    {
+      "name": "Emmanuel",
+      "url": "https://www.npmjs.com/~admirableyetti"
+    }
+  ],
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/echb/low_cache"
+  }
 }
